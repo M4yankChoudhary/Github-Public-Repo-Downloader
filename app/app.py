@@ -1,7 +1,7 @@
 import requests
 import os
 
-def download_repo(username, download_path):
+def download_repo(username, download_path, main_branch_name):
     # Construct the API URL to fetch user's repositories
     url = f"https://api.github.com/users/{username}/repos"
 
@@ -22,9 +22,9 @@ def download_repo(username, download_path):
             repo_name = repo["name"]
             repo_url = repo["html_url"]
             print(f"Downloading repository '{repo_name}'...")
-
+            branch_name = main_branch_name or "main"
             # Construct the direct zip download URL
-            zip_url = f"https://codeload.github.com/{username}/{repo_name}/zip/refs/heads/main"
+            zip_url = f"https://codeload.github.com/{username}/{repo_name}/zip/refs/heads/{branch_name}"
 
             # Make a GET request to download the zip file
             zip_response = requests.get(zip_url)
@@ -74,10 +74,10 @@ def download_repo(username, download_path):
 if __name__ == "__main__":
     # Provide the GitHub username
     github_username = input("Enter the GitHub username: ")
-
+    main_branch_name = input("Enter the branch name or leave empty (main)': ")
     # Provide the path where you want to save the downloaded repositories
     download_path = input("Enter the path where you want to save the repositories (press Enter for current directory): ")
     if download_path == "":
         download_path = "."
 
-    download_repo(github_username, download_path)
+    download_repo(github_username, download_path, main_branch_name)
